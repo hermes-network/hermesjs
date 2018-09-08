@@ -1,18 +1,19 @@
 import web3Utils from 'web3-utils';
 import ethUtils from 'ethereumjs-util';
+import abi from 'ethereumjs-abi';
 
 export function createMsgHash(
-  version,
   to,
-  from,
   value,
   data,
-  extraHash,
-  nonce = null,
-  gasPrice = null,
-  gasLimit = null,
-  gasToken = null,
-  operationType = null
+  operation,
+  safeTxGas,
+  dataGas,
+  gasPrice,
+  gasToken,
+  refundReceiver,
+  nonce,
+  SAFE_TX_TYPEHASH = 0x14d461bc7412367e924637b363c7bf29b8f47e2f84869f4426e5633d8af47b20
 ) {
   const dataHash = web3Utils.soliditySha3({
     t: 'bytes',
@@ -20,27 +21,35 @@ export function createMsgHash(
   });
 
   console.log(data.length);
-  const callPrefix = data.length > 4 ? data.substring(0, 4) : '0x00';
-
   console.log(dataHash);
-  console.log(callPrefix);
-  return web3Utils
-    .soliditySha3(
-      { t: 'bytes', v: '0x19' },
-      { t: 'bytes', v: version },
-      { t: 'address', v: from },
-      { t: 'address', v: to },
-      { t: 'uint256', v: value },
-      { t: 'bytes32', v: dataHash },
-      { t: 'uint256', v: nonce },
-      { t: 'uint256', v: gasPrice },
-      { t: 'uint256', v: gasLimit },
-      { t: 'address', v: gasToken },
-      { t: 'uint8', v: operationType },
-      { t: 'bytes4', v: callPrefix },
-      { t: 'bytes', v: extraHash }
-    )
-    .substring(2);
+
+  return abi.soliditySHA3(
+    [
+      'bytes32',
+      'address',
+      'uint256',
+      'bytes',
+      'uint',
+      'uint256',
+      'uint256',
+      'uint256',
+      'address',
+      'uint256'
+    ],
+    [
+      SAFE_TX_TYPEHASH,
+      to,
+      value,
+      dataHash,
+      operation,
+      safeTxGas,
+      gasPrice,
+      gasToken,
+      refundReceiver,
+      nonce
+    ]
+  );
+  // .substring(2);
 }
 
 export function createSignedMsg(web3Provider, msgHash) {
