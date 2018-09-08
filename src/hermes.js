@@ -1,12 +1,10 @@
-// import dependencies
-import web3 from 'web3';
-import { createMsgHash, createSignedMsg } from '../util/msgOperations';
+import Web3 from 'web3'
+import { createMsgHash, createSignedMsg } from '../util/msgOperations'
 
-// return hermesjs class
 export class HermesJS {
-  constructor() {
-    this.web3Provider = web3;
-    this.initialized = true;
+  constructor(provider) {
+    this.web3 = new Web3(provider)
+    this.initialized = true
   }
 
   sendMessage(
