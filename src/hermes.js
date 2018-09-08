@@ -6,11 +6,10 @@ import { createMsgHash, createSignedMsg } from './msgOperations';
 export class HermesJS {
   constructor(provider) {
     this.web3 = new Web3(provider);
-    this.initialized = true;
   }
 
-  async initialize() {
-    this.publisher = await Publisher.create();
+  async initialize(publisher) {
+    this.publisher = publisher || await Publisher.create();
   }
 
   static async create() {

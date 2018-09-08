@@ -24,7 +24,13 @@ if (config.get('uglify')) {
 /*-------------------------------------------------*/
 
 module.exports = {
-  entry: [ 'babel-polyfill', './src/index.js' ],
+  entry: {
+    app: [
+        'babel-polyfill',
+        'any-promise/register/bluebird',
+        './src/index.js'
+    ]
+  },
   output: {
     library: 'HermesJS',
     libraryTarget: 'umd',
