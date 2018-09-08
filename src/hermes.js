@@ -1,16 +1,29 @@
-import Web3 from 'web3'
+import Web3 from 'web3';
 
-import Publisher from './publisher'
-import { createMsgHash, createSignedMsg } from '../util/msgOperations'
+import Publisher from './publisher';
+import { createMsgHash, createSignedMsg } from './msgOperations';
 
 export class HermesJS {
   constructor(provider) {
-    this.web3 = new Web3(provider)
-    this.publisher = new Publisher(this.web3)
-    this.initialized = true
+    this.web3 = new Web3(provider);
+    this.initialized = true;
   }
 
-  sendMessage(
+  async initialize() {
+    this.publisher = await Publisher.create();
+  }
+
+  static async create() {
+    const o = new HermesJS();
+    await o.initialize();
+    return o;
+  }
+
+  setSafeAddress(_safeAddress) {
+    this.safeAddress = _safeAddress;
+  }
+
+  async sendMessage(
     version,
     to,
     from,
@@ -38,8 +51,11 @@ export class HermesJS {
     );
 
     let signedMessage = createSignedMsg(this.web3, msgHash);
-    // this.publisher.send(signedMessage);
 
-    return signedMessage;
+    let toSend = {
+      safeAddress: this.safeAddress,
+      signedMessage: signedMessage
+    };
+    await this.publisher.send(toSend);
   }
 }
