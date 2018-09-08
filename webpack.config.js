@@ -24,7 +24,7 @@ if (config.get('uglify')) {
 /*-------------------------------------------------*/
 
 module.exports = {
-  entry: './src/index.js',
+  entry: [ 'babel-polyfill', './src/index.js' ],
   output: {
     library: 'HermesJS',
     libraryTarget: 'umd',
