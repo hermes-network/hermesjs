@@ -34,7 +34,7 @@ export class HermesJS {
       operationType
     );
 
-    let signedMessage = createSignedMsg(this.web3Provider, msgHash);
+    let signedMessage = createSignedMsg(this.web3, msgHash);
 
     return signedMessage;
   }
