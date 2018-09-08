@@ -1,9 +1,12 @@
 import Web3 from 'web3'
+
+import Publisher from './publisher'
 import { createMsgHash, createSignedMsg } from '../util/msgOperations'
 
 export class HermesJS {
   constructor(provider) {
     this.web3 = new Web3(provider)
+    this.publisher = new Publisher(this.web3)
     this.initialized = true
   }
 
@@ -35,6 +38,7 @@ export class HermesJS {
     );
 
     let signedMessage = createSignedMsg(this.web3, msgHash);
+    // this.publisher.send(signedMessage);
 
     return signedMessage;
   }
